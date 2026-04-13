@@ -2,11 +2,15 @@ package com.ch3_scheduler.service;
 
 import com.ch3_scheduler.dto.CreateScheduleRequest;
 import com.ch3_scheduler.dto.CreateScheduleResponse;
+import com.ch3_scheduler.dto.FindScheduleResponse;
 import com.ch3_scheduler.entity.Schedule;
 import com.ch3_scheduler.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,47 @@ public class ScheduleService {
                 saveSchedule.getName(),
                 saveSchedule.getCreatedAt(),
                 saveSchedule.getCreatedAt()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<FindScheduleResponse> getAllSchedules(String name){
+        List<Schedule> allSchedule;
+        if (name != null && !name.isEmpty()){
+            allSchedule = scheduleRepository.findAllByNameOrderByModifiedAtDesc(name);
+        } else {
+            allSchedule = scheduleRepository.findAllByOrderByModifiedAtDesc();
+        }
+        List<FindScheduleResponse> scheduleLists = new ArrayList<>();
+        for (Schedule schedule : allSchedule){
+            FindScheduleResponse scheduleList = new FindScheduleResponse(
+                    schedule.getId(),
+                    schedule.getTitle(),
+                    schedule.getContent(),
+                    schedule.getName(),
+                    schedule.getCreatedAt(),
+                    schedule.getModifiedAt()
+            );
+            scheduleLists.add(scheduleList);
+        }
+        return scheduleLists;
+
+    }
+
+
+    @Transactional(readOnly = true)
+     public FindScheduleResponse getOneSchedule(Long id){
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+                () -> new IllegalStateException("없는 일정 입니다.")
+        );
+
+        return new FindScheduleResponse(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                schedule.getName(),
+                schedule.getCreatedAt(),
+                schedule.getModifiedAt()
         );
     }
 }
