@@ -1,8 +1,6 @@
 package com.ch3_scheduler.service;
 
-import com.ch3_scheduler.dto.CreateScheduleRequest;
-import com.ch3_scheduler.dto.CreateScheduleResponse;
-import com.ch3_scheduler.dto.FindScheduleResponse;
+import com.ch3_scheduler.dto.*;
 import com.ch3_scheduler.entity.Schedule;
 import com.ch3_scheduler.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +68,28 @@ public class ScheduleService {
         );
 
         return new FindScheduleResponse(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                schedule.getName(),
+                schedule.getCreatedAt(),
+                schedule.getModifiedAt()
+        );
+    }
+
+    @Transactional
+    public UpdateScheduleResponse update(Long id, UpdateScheduleRequest request) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+                () -> new IllegalStateException("없는 일정 입니다.")
+        );
+        if (!schedule.getPassword().equals(request.getPassword())){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        schedule.update(
+                request.getTitle(),
+                request.getName()
+        );
+        return new UpdateScheduleResponse(
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
