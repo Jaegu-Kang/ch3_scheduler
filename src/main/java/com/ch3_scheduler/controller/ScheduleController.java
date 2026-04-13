@@ -1,8 +1,6 @@
 package com.ch3_scheduler.controller;
 
-import com.ch3_scheduler.dto.CreateScheduleRequest;
-import com.ch3_scheduler.dto.CreateScheduleResponse;
-import com.ch3_scheduler.dto.FindScheduleResponse;
+import com.ch3_scheduler.dto.*;
 import com.ch3_scheduler.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +27,10 @@ public class ScheduleController {
     @GetMapping("/{id}")
     public FindScheduleResponse getOneSchedule(@PathVariable Long id){
         return scheduleService.getOneSchedule(id);
+    }
+
+    @PutMapping("/{id}")
+    public UpdateScheduleResponse update(@PathVariable Long id, @RequestBody UpdateScheduleRequest request){
+        return scheduleService.update(id,request);
     }
 }
