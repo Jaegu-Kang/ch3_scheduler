@@ -33,4 +33,9 @@ public class ScheduleController {
     public UpdateScheduleResponse update(@PathVariable Long id, @RequestBody UpdateScheduleRequest request){
         return scheduleService.update(id,request);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteSchedule(@PathVariable Long id, @RequestBody DeleteScheduleRequest request){
+        scheduleService.deleteSchedule(id, request);
+    }
 }
